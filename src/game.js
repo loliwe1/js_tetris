@@ -59,7 +59,6 @@ export default class Game {
     }
     hasCollision(){
         const {y: pieceY, x: pieceX, blocks} = this.activePiece;
-
         for(let y = 0; y < blocks.length; y++){
             for(let x = 0 ; x < blocks[y].length; x++){
 
