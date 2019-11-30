@@ -58,26 +58,37 @@ export default class Game {
         }
     }
 
-    rotationPiece() { // Метод поворота фигуры
+    rotatatePiece() { // Метод поворота фигуры
+        this.rotatateBlocks();
+
+
+        if (this.hasCollision()) {
+            this.rotatateBlocks(false);
+        };
+    }
+
+    rotatateBlocks(clockwise = true) {
         const blocks = this.activePiece.blocks;
         const length = blocks.length;
+        const x = Math.floor(length / 2);
+        const y = length - 1;
 
-        let temp = [];
+        for (let i = 0; i < x; i++) { // Алгоритм ротации фигуры https://harddrop.com/wiki/SRS
+            for (let j = i; j < y - i; j++) {
+                const temp = blocks[i][j];
 
-        for(let i = 0; i < length; i++){
-            temp[i] = new Array(length).fill(0); // Создаем копию массива активной фигуры, заполняем ее нулями
-        };
-
-        for(let y = 0; y < length; y++){
-            for(let x = 0; x < length; x++){
-                temp[x][y] = blocks[length - 1 - y][x]; // Копируем в пустой массив активную фигуру, заменяя строки на столбцы для поворота
+                if (clockwise) {
+                    blocks[i][j] = blocks[y - j][i];
+                    blocks[y - j][i] = blocks[y - i][y - j];
+                    blocks[y - i][y - j] = blocks[j][y - i];
+                    blocks[j][y - i] = temp;
+                } else {
+                    blocks[i][j] = blocks[j][y - i];
+                    blocks[j][y - i] = blocks[y - i][y - j];
+                    blocks[y - i][y - j] = blocks[y - j][i];
+                    blocks[y - j][i] = temp;
+                }
             }
-        };
-
-        this.activePiece.blocks = temp;
-
-        if(this.hasCollision()){
-            this.activePiece.blocks = blocks
         };
     }
 
