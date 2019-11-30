@@ -2,29 +2,7 @@ export default class Game {
     score = 0;
     lines = 0;
     level = 0;
-    playfield = [ // Игровое поле
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    ];
-
+    playfield = this.createPlayfield(); // Создаем игровое поле
     activePiece = { // Активная фигура
         x: 0,
         y: 0,
@@ -32,8 +10,47 @@ export default class Game {
             [0, 1, 0],
             [1, 1, 1],
             [0, 0, 0]
-        ],
+        ]
     };
+
+    getState(){
+        const playfield = this.createPlayfield();
+        const {y: pieceY, x: pieceX, blocks} = this.activePiece;
+
+        for (let y = 0; y < this.playfield.length; y++) {
+            playfield[y] = [];
+
+            for (let x = 0; x < this.playfield[y].length; x++) {
+                playfield[y][x] = this.playfield[y][x];
+            } 
+        }
+        for (let y = 0; y < blocks.length; y++) {
+            for (let x = 0; x < blocks[y].length; x++) {
+                if(blocks[y][x]){
+                    playfield[pieceY +y][pieceX + x] = blocks[y][x];
+                }
+
+                
+            }
+            
+        }
+        return { playfield };
+
+    }
+
+    createPlayfield(){
+        const playfield = [];
+
+        for (let y = 0; y < 20; y++) {
+            playfield[y] = [];
+
+            for (let x = 0; x < 10; x++) {
+                playfield[y][x] = 0;
+                
+            } 
+        }
+        return playfield;
+    }
 
     movePieceLeft() { //Движение фигуры влево
         this.activePiece.x -= 1;
@@ -93,11 +110,7 @@ export default class Game {
     }
 
     hasCollision() { //Метод проверяющий выход за пределы поля
-        const {
-            y: pieceY,
-            x: pieceX,
-            blocks
-        } = this.activePiece; // Деструктуризация активной фигуры
+        const {y: pieceY, x: pieceX, blocks} = this.activePiece; // Деструктуризация активной фигуры
         for (let y = 0; y < blocks.length; y++) {
             for (let x = 0; x < blocks[y].length; x++) {
 
