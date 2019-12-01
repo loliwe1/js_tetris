@@ -3,15 +3,9 @@ export default class Game {
     lines = 0;
     level = 0;
     playfield = this.createPlayfield(); // Создаем игровое поле
-    activePiece = { // Активная фигура
-        x: 0,
-        y: 0,
-        blocks: [
-            [0, 1, 0],
-            [1, 1, 1],
-            [0, 0, 0]
-        ]
-    };
+    activePiece = this.createPiece();// Активная фигура
+
+    nextPiece = this.createPiece();
 
     getState(){
         const playfield = this.createPlayfield();
@@ -52,6 +46,72 @@ export default class Game {
         return playfield;
     }
 
+    createPiece(){
+        const index = Math.floor(Math.random() * 7);
+        const type = 'IJLOSTZ'[index];
+        const piece = { };
+        
+        switch(type){
+            case 'I':
+                piece.blocks=[
+                    [0,0,0,0],
+                    [1,1,1,1],
+                    [0,0,0,0],
+                    [0,0,0,0]
+                ];
+                break;
+            case 'J':
+                piece.blocks = [
+                    [0,0,0],
+                    [2,2,2],
+                    [0,0,0]
+                ];
+                break;
+            case 'L':
+                piece.blocks = [
+                    [0,0,0],
+                    [3,3,3],
+                    [0,0,0]
+                ];
+                break;
+            case 'O':
+                piece.blocks=[
+                    [0,0,0,0],
+                    [0,4,4,0],
+                    [0,4,4,0],
+                    [0,0,0,0]
+                ];
+                break;
+            case 'S':
+                piece.blocks = [
+                    [0,0,0],
+                    [0,5,5],
+                    [5,5,0]
+                ];
+                break;
+            case 'T':
+                piece.blocks = [
+                    [0,0,0],
+                    [6,6,6],
+                    [0,6,0]
+                ];
+                break;
+            case 'Z':
+                piece.blocks = [
+                    [0,0,0],
+                    [7,7,0],
+                    [0,7,7]
+                ];
+                break;
+            default:
+                throw new Error('Неизвестный тип фигуры');
+        }
+        piece.x = Math.floor((10 - piece.blocks[0].length) / 2);
+        piece.y = -1;
+
+        return piece;
+    };
+
     movePieceLeft() { //Движение фигуры влево
         this.activePiece.x -= 1;
 
@@ -71,7 +131,8 @@ export default class Game {
 
         if (this.hasCollision()) { // Если вышли за нижнюю границу поля отнимаем от у единицу
             this.activePiece.y -= 1;
-            this.lockPiece(); // Если встретили другую фигуру или нижнюю границу поля, то фиксируем фигуру на этом месте
+            this.lockPiece();// Если встретили другую фигуру или нижнюю границу поля, то фиксируем фигуру на этом месте
+            this.updatePieces(); 
         }
     }
 
@@ -144,6 +205,10 @@ export default class Game {
         }
     };
 
+    updatePieces(){
+        this.activePiece = this.nextPiece;
+        this.nextPiece = this.createPiece();
+    }
 
 
 
